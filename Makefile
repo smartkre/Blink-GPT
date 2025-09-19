@@ -4,7 +4,7 @@
 CC = arm-none-eabi-gcc
 OBJCOPY = arm-none-eabi-objcopy
 CFLAGS  = -Wall -Wextra -Os -ffreestanding -fno-builtin -mcpu=cortex-m3 -mthumb -Iinclude -Iinclude/CMSIS
-LDFLAGS = -T STM32F103x6_FLASH.ld -nostdlib -Wl,-Map=build/firmware.map,--gc-sections
+LDFLAGS = -T STM32F103X6_FLASH.ld -nostdlib -Wl,-Map=build/firmware.map,--gc-sections
 
 SRC = src/main.c src/system_stm32f1xx.c
 ASM = src/startup_stm32f103xb.s
