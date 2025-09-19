@@ -1,9 +1,9 @@
-# Makefile для STM32F103C6T6
+# Makefile для STM32F103C6T6 с CMSIS include
 
 # Инструменты
 CC = arm-none-eabi-gcc
 OBJCOPY = arm-none-eabi-objcopy
-CFLAGS = -Wall -Wextra -Os -ffreestanding -fno-builtin -mcpu=cortex-m3 -mthumb
+CFLAGS = -Wall -Wextra -Os -ffreestanding -fno-builtin -mcpu=cortex-m3 -mthumb -IInclude
 LDFLAGS = -T STM32F103x6_FLASH.ld -nostdlib -Wl,-Map=build/firmware.map,--gc-sections
 
 SRC = src/main.c src/system_stm32f1xx.c
