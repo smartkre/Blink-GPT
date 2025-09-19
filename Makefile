@@ -8,6 +8,7 @@ LDFLAGS = -T STM32F103X6_FLASH.ld -nostdlib -Wl,-Map=build/firmware.map,--gc-sec
 
 SRC = src/main.c src/system_stm32f1xx.c
 ASM = src/startup_stm32f103xb.s
+src/main.c src/system_stm32f1xx.c src/init.c src/startup_stm32f103xb.s
 
 BUILD_DIR = build
 TARGET = $(BUILD_DIR)/firmware
