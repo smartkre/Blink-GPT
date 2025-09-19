@@ -1,21 +1,29 @@
+# Makefile для STM32F103C6T6
+
+# Инструменты
 CC = arm-none-eabi-gcc
+OBJCOPY = arm-none-eabi-objcopy
 CFLAGS = -Wall -Wextra -Os -ffreestanding -fno-builtin -mcpu=cortex-m3 -mthumb
-LDFLAGS = -T stm32f103c6.ld -nostdlib -Wl,-Map=build/firmware.map,--gc-sections
+LDFLAGS = -T STM32F103x6_FLASH.ld -nostdlib -Wl,-Map=build/firmware.map,--gc-sections
 
-SRC = src/startup.s src/main.c
-OBJ = $(SRC:.c=.o)
-OBJ := $(OBJ:.s=.o)
+SRC = src/main.c src/system_stm32f1xx.c
+ASM = src/startup_stm32f103xb.s
 
-all: build/firmware.elf build/firmware.bin
+BUILD_DIR = build
+TARGET = $(BUILD_DIR)/firmware
 
-build/firmware.elf: $(SRC) stm32f103c6.ld | build
-	$(CC) $(CFLAGS) $(SRC) -o $@ $(LDFLAGS)
+.PHONY: all clean
 
-build/firmware.bin: build/firmware.elf
-	arm-none-eabi-objcopy -O binary $< $@
+all: $(TARGET).bin
 
-build:
-	mkdir -p build
+$(BUILD_DIR):
+	mkdir -p $(BUILD_DIR)
+
+$(TARGET).elf: $(SRC) $(ASM) | $(BUILD_DIR)
+	$(CC) $(CFLAGS) $(SRC) $(ASM) $(LDFLAGS) -o $@
+
+$(TARGET).bin: $(TARGET).elf
+	$(OBJCOPY) -O binary $< $@
 
 clean:
-	rm -rf build
+	rm -rf $(BUILD_DIR)
