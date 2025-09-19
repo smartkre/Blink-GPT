@@ -2,8 +2,7 @@ name: Build STM32 Blink
 
 on:
   push:
-    branches:
-      - main
+    branches: [ "main" ]
   workflow_dispatch:
 
 jobs:
@@ -11,26 +10,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Клонируем репозиторий
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2. Устанавливаем GCC ARM
       - name: Install ARM GCC
-        uses: marus/cross-compiler-setup@v2
-        with:
-          compiler: 'arm-none-eabi-gcc'
-          version: '14.2.1'
+        run: |
+          wget https://developer.arm.com/-/media/Files/downloads/gnu/14.2.rel1/binrel/arm-gnu-toolchain-14.2.rel1-x86_64-arm-none-eabi.tar.xz
+          tar -xf arm-gnu-toolchain-14.2.rel1-x86_64-arm-none-eabi.tar.xz
+          echo "$PWD/arm-gnu-toolchain-14.2.rel1-x86_64-arm-none-eabi/bin" >> $GITHUB_PATH
 
-      # 3. Собираем прошивку
       - name: Build firmware
         run: |
-          mkdir -p build
-          arm-none-eabi-gcc -Wall -Wextra -Os -ffreestanding -fno-builtin -mcpu=cortex-m3 -mthumb src/startup.s src/main.c -nostdlib -T stm32f103c6.ld -Wl,-Map=build/firmware.map,--gc-sections -Wl,--gc-sections -o build/firmware.elf
-          arm-none-eabi-objcopy -O binary build/firmware.elf build/firmware.bin
-          ls -lh build
+          make
 
-      # 4. Загружаем бинарник как артефакт
       - name: Upload firmware binary
         uses: actions/upload-artifact@v4
         with:
